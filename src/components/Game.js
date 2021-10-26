@@ -22,10 +22,7 @@ const Game = () => {
         if (!isNextX && playWithSystem === 'system' && !winner) {
             const randomSquare = Math.floor(Math.random() * 10)
             computerPlayer(randomSquare)
-            // console.log('Random num', randomSquare)
-            // console.log(XO)
         }
-
     }, [isNextX, playWithSystem])
 
     const XO = isNextX ? 'X' : 'O'
