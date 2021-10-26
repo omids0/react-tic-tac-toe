@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import '../style/style.css'
 
 function Square({ value, onClick }) {
@@ -16,6 +16,18 @@ function Restart({ onClick }) {
 const Game = () => {
     const [squares, setSquares] = useState(Array(9).fill(null))
     const [isNextX, setIsNextX] = useState(true)
+    const [playWithSystem, setPlayWithSystem] = useState('system')
+
+    useEffect(() => {
+        if (!isNextX && playWithSystem === 'system' && !winner) {
+            const randomSquare = Math.floor(Math.random() * 10)
+            computerPlayer(randomSquare)
+            // console.log('Random num', randomSquare)
+            // console.log(XO)
+        }
+
+    }, [isNextX, playWithSystem])
+
     const XO = isNextX ? 'X' : 'O'
     const winner = calculateWinner(squares)
 
@@ -58,6 +70,29 @@ const Game = () => {
         )
     }
 
+    const computerPlayer = (randomNum) => {
+        if (randomNum <= squares.length) {
+            if (squares[randomNum] !== null || winner !== null) {
+                for (let i = 0; i < squares.length; i++) {
+                    if (squares[i] == null) {
+                        
+                        const nextSquares = squares.slice()
+                        nextSquares[i] = XO
+                        setSquares(nextSquares)
+                        setIsNextX(!isNextX)
+                    }
+                }
+            } else if (squares[randomNum] == null) {
+                const nextSquares = squares.slice()
+                nextSquares[randomNum] = XO
+                setSquares(nextSquares)
+
+                setIsNextX(!isNextX)
+            }
+        }
+
+    }
+
     return (
         <div className='container'>
             <h1 className='header'>Tic-Tac-Toe</h1>
@@ -80,6 +115,12 @@ const Game = () => {
             </div>
             <div className='game-status'>
                 {getStatus()}
+            </div>
+            <div className='player-status'>
+                <select className='player' value={playWithSystem} onChange={(e) => setPlayWithSystem(e.target.value)}>
+                    <option className='player-option' value='system'>Play With Computer</option>
+                    <option className='player-option' value='twoPlayer'>Two Players</option>
+                </select>
             </div>
             <div className='reset-game'>
                 {renderReset()}
